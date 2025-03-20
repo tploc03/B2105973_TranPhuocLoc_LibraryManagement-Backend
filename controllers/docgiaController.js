@@ -2,8 +2,6 @@
 const { body, validationResult } = require('express-validator');
 const Docgia = require('../models/docgia');
 
-// Lấy tất cả độc giả
-// controllers/docgiaController.js
 exports.getAllDocgias = async (req, res, next) => {
   try {
     const docgias = await Docgia.find({ isDeleted: false });

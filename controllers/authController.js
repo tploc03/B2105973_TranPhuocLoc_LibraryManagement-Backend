@@ -14,15 +14,20 @@ exports.register = [
       return res.status(400).json({ errors: errors.array() });
     }
     try {
-      const { username, password, email, role } = req.body;
+      const { username, password, email } = req.body; // Bỏ role
       const existingUser = await TaiKhoan.findOne({ $or: [{ username }, { email }] });
       if (existingUser) {
         return res.status(400).json({ message: 'Username hoặc Email đã tồn tại' });
       }
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = new TaiKhoan({ username, password: hashedPassword, email, role });
+      const newUser = new TaiKhoan({ username, password: hashedPassword, email }); // Bỏ role
       await newUser.save();
-      res.status(201).json({ message: 'Tạo tài khoản thành công', user: newUser });
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '8h' }); // Chỉ dùng id
+      res.status(201).json({
+        message: 'Tạo tài khoản thành công',
+        user: { id: newUser._id, username: newUser.username, email: newUser.email },
+        token,
+      });
     } catch (err) {
       next(err);
     }
@@ -32,21 +37,30 @@ exports.register = [
 exports.login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
-
     const user = await TaiKhoan.findOne({ username });
     if (!user) return res.status(400).json({ message: 'Tài khoản không tồn tại' });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Mật khẩu không đúng' });
 
-    // Tạo JWT token
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '8h' }
-    );
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '8h' });
+    res.json({
+      message: 'Đăng nhập thành công',
+      user: { id: user._id, username: user.username, email: user.email },
+      token,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
-    res.json({ message: 'Đăng nhập thành công', token });
+exports.getMe = async (req, res, next) => {
+  try {
+    const user = await TaiKhoan.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+    }
+    res.json({ user });
   } catch (err) {
     next(err);
   }

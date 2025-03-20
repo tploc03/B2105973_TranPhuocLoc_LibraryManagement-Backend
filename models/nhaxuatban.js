@@ -1,3 +1,4 @@
+// models/nhaxuatban.js
 const mongoose = require('mongoose');
 
 const nhaxuatbanSchema = new mongoose.Schema({

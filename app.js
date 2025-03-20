@@ -22,8 +22,6 @@ const theodoimuonsachRoutes = require('./routes/theodoimuonsachRoutes');
 const docgiaRoutes = require('./routes/docgiaRoutes');
 const nhanvienRoutes = require('./routes/nhanvienRoutes');
 const authRoutes = require('./routes/authRoutes');
-// Nếu có authRoutes
-// const authRoutes = require('./routes/authRoutes');
 
 app.use('/api/nhaxuatbans', nhaxuatbanRoutes);
 app.use('/api/sachs', sachRoutes);
@@ -31,7 +29,6 @@ app.use('/api/theodoimuonsachs', theodoimuonsachRoutes);
 app.use('/api/docgias', docgiaRoutes);
 app.use('/api/nhanviens', nhanvienRoutes);
 app.use('/api/auth', authRoutes);
-// app.use('/api/auth', authRoutes);
 
 // Global Error Handler (đặt sau tất cả các route)
 app.use(errorHandler);

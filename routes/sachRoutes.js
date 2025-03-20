@@ -2,12 +2,12 @@
 const express = require('express');
 const router = express.Router();
 const sachController = require('../controllers/sachController');
-const { verifyToken, verifyRole } = require('../middlewares/authMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 
 router.get('/', sachController.getAllSachs);
 router.get('/:id', sachController.getSachById);
-router.post('/', verifyToken, verifyRole('ADMIN'), sachController.createSach);
-router.put('/:id', verifyToken, verifyRole('ADMIN'), sachController.updateSach);
-router.delete('/:id', verifyToken, verifyRole('ADMIN'), sachController.deleteSach);
+router.post('/', authMiddleware.verifyToken, sachController.createSach);
+router.put('/:id', authMiddleware.verifyToken, sachController.updateSach);
+router.delete('/:id', authMiddleware.verifyToken, sachController.deleteSach);
 
 module.exports = router;
