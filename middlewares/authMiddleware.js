@@ -13,7 +13,7 @@ exports.verifyToken = (req, res, next) => {
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err)
       return res.status(403).json({ message: 'Token không hợp lệ' });
-    req.user = decoded; // Chỉ cần id, không cần role
+    req.user = decoded;
     next();
   });
 };
