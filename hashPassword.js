@@ -1,3 +1,4 @@
+// hashPassword.js
 const bcrypt = require('bcrypt');
 
 const password = 'admin123';

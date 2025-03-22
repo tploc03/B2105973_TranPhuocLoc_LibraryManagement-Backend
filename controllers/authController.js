@@ -1,3 +1,4 @@
+// controllers\authController.js
 const { body, validationResult } = require('express-validator');
 const TaiKhoan = require('../models/taikhoan');
 const bcrypt = require('bcrypt');
